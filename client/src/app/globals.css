@@ -1347,9 +1347,9 @@ select.input {
   background: var(--acid);
 }
 .answer-real {
-  color: var(--paper);
-  border-color: var(--line-strong);
-  background: #22252d;
+  color: #08152f;
+  border-color: rgba(122, 167, 255, 0.7);
+  background: var(--blue);
 }
 .answer-button:disabled {
   opacity: 0.65;
@@ -1392,7 +1392,19 @@ select.input {
   background: var(--acid);
 }
 .reveal-real {
-  background: var(--coral);
+  background: var(--blue);
+}
+.reveal-result-correct {
+  background: #35c77a;
+}
+.reveal-result-incorrect {
+  background: var(--danger);
+}
+.reveal-answer-ai {
+  color: var(--acid);
+}
+.reveal-answer-real {
+  color: var(--blue);
 }
 .track-reveal {
   color: var(--paper) !important;
@@ -2454,6 +2466,12 @@ select.input {
   background: #1d2027;
 }
 
+.answer-real {
+  color: #08152f;
+  border-color: rgba(122, 167, 255, 0.7);
+  background: var(--blue);
+}
+
 .answer-button:hover:not(:disabled) {
   color: var(--paper);
   border-color: rgba(245, 242, 233, 0.58);
@@ -2467,9 +2485,9 @@ select.input {
 }
 
 .answer-real.selected {
-  color: #180804;
-  border-color: var(--coral);
-  background: var(--coral);
+  color: #08152f;
+  border-color: #a9c6ff;
+  background: var(--blue);
 }
 
 .answer-button strong {

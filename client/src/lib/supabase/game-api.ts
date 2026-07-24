@@ -14,7 +14,7 @@ type RoomRpcName =
   | "heartbeat"
   | "set_ready"
   | "update_settings"
-  | "start_preloaded_game"
+  | "start_game"
   | "submit_answer"
   | "remove_player"
   | "play_again"
@@ -148,7 +148,7 @@ export async function updateSettings(
 }
 
 export async function startGame(code: string): Promise<RoomState> {
-  return rpcRoomState("start_preloaded_game", { p_code: code });
+  return rpcRoomState("start_game", { p_code: code });
 }
 
 export async function submitAnswer(
