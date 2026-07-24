@@ -35,9 +35,16 @@ interface JamendoTrack {
 }
 
 interface JamendoResponse {
-  headers?: { status?: string; results_fullcount?: number };
+  headers?: {
+    status?: string;
+    results_count?: number;
+    results_fullcount?: number;
+  };
   results?: JamendoTrack[];
 }
+
+const JAMENDO_CATALOG_FALLBACK_SIZE = 10_000;
+let jamendoCatalogSize: number | null = null;
 
 const PUBLIC_ERROR_CODES = new Set([
   "JAMENDO_NOT_CONFIGURED",
@@ -101,6 +108,7 @@ async function fetchJamendoCatalogSize(
   clientId: string,
   signal: AbortSignal,
 ): Promise<number> {
+  if (jamendoCatalogSize !== null) return jamendoCatalogSize;
   const params = jamendoParams(clientId);
   params.set("limit", "1");
   params.set("fullcount", "true");
@@ -110,9 +118,13 @@ async function fetchJamendoCatalogSize(
   );
   if (!response.ok) throw new Error("JAMENDO_UNAVAILABLE");
   const payload = (await response.json()) as JamendoResponse;
+  if (payload.headers?.status !== "success") {
+    throw new Error("JAMENDO_UNAVAILABLE");
+  }
   const count = Number(payload.headers?.results_fullcount || 0);
-  if (!Number.isFinite(count) || count < 1) throw new Error("JAMENDO_EMPTY");
-  return count;
+  jamendoCatalogSize =
+    Number.isFinite(count) && count > 0 ? count : JAMENDO_CATALOG_FALLBACK_SIZE;
+  return jamendoCatalogSize;
 }
 
 async function fetchJamendoCandidates(
@@ -133,6 +145,9 @@ async function fetchJamendoCandidates(
   );
   if (!response.ok) throw new Error("JAMENDO_UNAVAILABLE");
   const payload = (await response.json()) as JamendoResponse;
+  if (payload.headers?.status !== "success") {
+    throw new Error("JAMENDO_UNAVAILABLE");
+  }
   return (payload.results || []).filter(
     (track) =>
       track.audiodownload_allowed === true &&

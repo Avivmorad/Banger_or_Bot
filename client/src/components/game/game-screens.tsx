@@ -47,14 +47,6 @@ function displayName(name: string) {
   return name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
 }
 
-function AnswerIcon({ choice }: { choice: AnswerChoice | null }) {
-  return choice === "ai" ? (
-    <RobotIcon aria-hidden="true" />
-  ) : (
-    <PersonIcon aria-hidden="true" />
-  );
-}
-
 function AudioStatus({
   audioState,
   muted,
@@ -473,12 +465,15 @@ export function GameScreens({
           </p>
         )}
         <div
-          className={`reveal-orb reveal-${round.correct_answer}`}
-          aria-hidden="true"
+          className={`reveal-orb reveal-${round.correct_answer} ${correct ? "reveal-result-correct" : "reveal-result-incorrect"}`}
+          aria-label={correct ? "Correct answer" : "Incorrect answer"}
+          role="img"
         >
-          <AnswerIcon choice={round.correct_answer} />
+          {correct ? <CheckIcon /> : <XIcon />}
         </div>
-        <p className="eyebrow">Correct Answer</p>
+        <p className={`eyebrow reveal-answer-${round.correct_answer}`}>
+          Correct Answer
+        </p>
         <h1 id="reveal-title">{answerLabel(round.correct_answer)}</h1>
         <div
           className={`player-result ${correct ? "is-correct" : "is-incorrect"}`}

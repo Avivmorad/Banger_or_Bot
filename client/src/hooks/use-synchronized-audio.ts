@@ -36,8 +36,7 @@ export function useSynchronizedAudio({
   const [loadAttempt, setLoadAttempt] = useState(0);
   const roundId = round?.id ?? null;
   const fallbackAudioUrl = round?.audio_url ?? null;
-  const audioAvailable =
-    (round?.audio_available ?? false) && phase !== "preparing";
+  const audioAvailable = round?.audio_available ?? false;
   const startsAt = round?.starts_at ?? null;
   const audioDurationSeconds = round?.audio_duration_seconds ?? 0;
 

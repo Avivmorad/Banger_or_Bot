@@ -369,6 +369,32 @@ test("mobile keyboard flow reports an invalid room without overflow", async ({
   expect(overflow).toBe(false);
 });
 
+test("join validation reports both fields and focuses the first invalid field", async ({
+  page,
+  baseURL,
+}) => {
+  await grantPreviewAccess(page);
+  await page.goto(`${baseURL}/join`);
+
+  const joinButton = page.getByRole("button", { name: "Join Game" });
+  await expect(joinButton).toBeDisabled();
+  await page.getByLabel("Nickname").focus();
+  await page.keyboard.press("Enter");
+
+  await expect(page.getByLabel("Room code")).toBeFocused();
+  await expect(page.locator("#join-code-error")).toContainText(
+    "Enter the complete six-character room code.",
+  );
+  await expect(page.locator("#join-nickname-error")).toContainText(
+    "Use a nickname between 2 and 20 characters.",
+  );
+
+  await page.getByLabel("Room code").fill("ABC234");
+  await expect(joinButton).toBeDisabled();
+  await page.getByLabel("Nickname").fill("Ready Player");
+  await expect(joinButton).toBeEnabled();
+});
+
 test("home and room creation stay usable at common phone widths", async ({
   page,
   baseURL,

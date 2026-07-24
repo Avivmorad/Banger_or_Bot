@@ -206,17 +206,32 @@ export function JoinRoomForm({
   const [code, setCode] = useState(normalizeRoomCode(initialCode));
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [codeTouched, setCodeTouched] = useState(false);
+  const [nicknameTouched, setNicknameTouched] = useState(false);
+  const codeIsValid = normalizeRoomCode(code).length === 6;
+  const nicknameIsValid = normalizeNickname(nickname).length >= 2;
+  const codeError =
+    codeTouched && !codeIsValid
+      ? "Enter the complete six-character room code."
+      : "";
+  const nicknameError =
+    nicknameTouched && !nicknameIsValid
+      ? "Use a nickname between 2 and 20 characters."
+      : "";
+
+  function showValidationErrors() {
+    setCodeTouched(true);
+    setNicknameTouched(true);
+    const firstInvalidId = !codeIsValid ? "join-code" : "join-nickname";
+    document.getElementById(firstInvalidId)?.focus();
+  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const cleanNickname = normalizeNickname(nickname);
     const cleanCode = normalizeRoomCode(code);
-    if (cleanNickname.length < 2) {
-      setError("Use a nickname between 2 and 20 characters.");
-      return;
-    }
-    if (cleanCode.length !== 6) {
-      setError("Enter the complete six-character room code.");
+    if (!codeIsValid || !nicknameIsValid) {
+      showValidationErrors();
       return;
     }
     if (!isBackendConfigured()) {
@@ -240,7 +255,20 @@ export function JoinRoomForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="join-card">
+    <form
+      onSubmit={handleSubmit}
+      onKeyDown={(event) => {
+        if (
+          event.key === "Enter" &&
+          !isSubmitting &&
+          (!codeIsValid || !nicknameIsValid)
+        ) {
+          event.preventDefault();
+          showValidationErrors();
+        }
+      }}
+      className="join-card"
+    >
       <div className="join-card-heading">
         <p className="eyebrow">Join a Game</p>
         <h1>Join a Banger or Bot room.</h1>
@@ -250,24 +278,37 @@ export function JoinRoomForm({
         id="join-code"
         label="Room code"
         value={code}
-        onChange={(event) => setCode(normalizeRoomCode(event.target.value))}
+        onChange={(event) => {
+          setCode(normalizeRoomCode(event.target.value));
+          setError("");
+        }}
+        onBlur={() => setCodeTouched(true)}
         placeholder="ABC234"
         autoComplete="off"
         maxLength={6}
         inputMode="text"
         className="code-input"
+        error={codeError}
       />
       <Field
         id="join-nickname"
         label="Nickname"
         value={nickname}
-        onChange={(event) => setNickname(event.target.value)}
+        onChange={(event) => {
+          setNickname(event.target.value);
+          setError("");
+        }}
+        onBlur={() => setNicknameTouched(true)}
         placeholder="Enter your nickname"
         autoComplete="nickname"
         maxLength={20}
+        error={nicknameError}
       />
       {error && <StatusMessage>{error}</StatusMessage>}
-      <Button type="submit" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        disabled={isSubmitting || !codeIsValid || !nicknameIsValid}
+      >
         {isSubmitting ? (
           <Spinner label="Joining room" />
         ) : (
