@@ -1595,15 +1595,24 @@ select.input {
 .final-song-list {
   max-width: 760px;
   margin: 28px auto 0;
-  text-align: left;
+  padding: clamp(18px, 4vw, 28px);
+  text-align: center;
+}
+.final-song-list > .eyebrow {
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.final-song-list h2 {
+  margin: 0;
 }
 .final-song-list ol {
   display: grid;
   gap: 9px;
-  margin: 16px 0 0;
+  margin: 18px 0 0;
   padding: 0;
   list-style: none;
   counter-reset: songs;
+  text-align: left;
 }
 .final-song-list li {
   display: flex;
@@ -1621,6 +1630,32 @@ select.input {
 .final-song-list li small {
   color: var(--muted);
   font-size: 0.67rem;
+}
+.final-song-list a {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid rgba(214, 255, 85, 0.48);
+  border-radius: 999px;
+  background: rgba(214, 255, 85, 0.1);
+  box-shadow:
+    0 0 14px rgba(214, 255, 85, 0.34),
+    inset 0 0 10px rgba(214, 255, 85, 0.08);
+  text-decoration: none;
+  text-shadow: 0 0 9px rgba(214, 255, 85, 0.8);
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+.final-song-list a:hover {
+  background: rgba(214, 255, 85, 0.17);
+  box-shadow:
+    0 0 22px rgba(214, 255, 85, 0.52),
+    inset 0 0 12px rgba(214, 255, 85, 0.12);
+  transform: translateY(-1px);
 }
 .final-burst {
   position: absolute;
@@ -2867,17 +2902,24 @@ select.input {
   }
 
   .final-song-list li {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 8px;
+    padding: 17px 6px;
+    text-align: center;
   }
 
   .history-round,
-  .history-result {
+  .history-track,
+  .history-result,
+  .final-song-list li a {
     grid-column: 1;
+    grid-row: auto;
+    justify-items: center;
   }
 
   .final-song-list li a {
-    grid-column: 2;
-    grid-row: 1 / span 3;
+    margin-top: 3px;
   }
 }
 
