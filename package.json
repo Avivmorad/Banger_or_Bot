@@ -1,4 +1,6 @@
 {
+  "name": "banger-or-bot",
+  "private": true,
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8"

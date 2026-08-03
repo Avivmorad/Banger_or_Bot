@@ -1357,41 +1357,41 @@ insert into private.tracks (
     'track-001', 'Neon Footsteps', 'Studio Session A', 'human-composed', 'real', 18,
     'track-001.wav',
     'A hand-composed syncopated bass line leaves tiny timing choices a human arranger wrote note by note.',
-    'Original composition and synthesized recording created for this project; released under CC0-1.0.',
+    'Original composition and synthesized recording created for this project. Copyright 2026 Aviv Morad; all rights reserved.',
     'demo'
   ),
   (
     'track-002', 'Glass Horizon', 'Studio Session B', 'human-composed', 'real', 18,
     'track-002.wav',
     'The melody was deliberately shaped across two phrases, including a held note that resolves late.',
-    'Original composition and synthesized recording created for this project; released under CC0-1.0.',
+    'Original composition and synthesized recording created for this project. Copyright 2026 Aviv Morad; all rights reserved.',
     'demo'
   ),
   (
     'track-003', 'After Midnight', 'Studio Session C', 'human-composed', 'real', 18,
     'track-003.wav',
     'A human-authored call-and-response motif is repeated with a small variation in the final bar.',
-    'Original composition and synthesized recording created for this project; released under CC0-1.0.',
+    'Original composition and synthesized recording created for this project. Copyright 2026 Aviv Morad; all rights reserved.',
     'demo'
   ),
   (
     'track-004', 'Probability Bloom', 'Pattern Engine 01', 'procedural-generator', 'ai', 18,
     'track-004.wav',
     'A seeded probabilistic generator chose notes from a weighted scale and quantized them into repeating cells.',
-    'Original deterministic generator output created for this project; released under CC0-1.0.',
+    'Original deterministic generator output created for this project. Copyright 2026 Aviv Morad; all rights reserved.',
     'demo'
   ),
   (
     'track-005', 'Synthetic Weather', 'Pattern Engine 02', 'procedural-generator', 'ai', 18,
     'track-005.wav',
     'The composition was produced by a deterministic rule system that mutates rhythm and pitch independently.',
-    'Original deterministic generator output created for this project; released under CC0-1.0.',
+    'Original deterministic generator output created for this project. Copyright 2026 Aviv Morad; all rights reserved.',
     'demo'
   ),
   (
     'track-006', 'Model Memory', 'Pattern Engine 03', 'procedural-generator', 'ai', 18,
     'track-006.wav',
     'A seeded Markov-style transition table generated the melody without a note-by-note human arrangement.',
-    'Original deterministic generator output created for this project; released under CC0-1.0.',
+    'Original deterministic generator output created for this project. Copyright 2026 Aviv Morad; all rights reserved.',
     'demo'
   );

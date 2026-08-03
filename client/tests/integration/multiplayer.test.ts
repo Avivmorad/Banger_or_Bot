@@ -245,9 +245,7 @@ describe.skipIf(!supabaseUrl || !supabaseKey || !serviceRoleKey)(
       expect(hostReveal.round?.artist).toBeTruthy();
       expect(hostReveal.round?.provider).toBe("project");
       expect(hostReveal.round?.source_url).toMatch(/^https:\/\//);
-      expect(hostReveal.round?.license_url).toBe(
-        "https://creativecommons.org/publicdomain/zero/1.0/",
-      );
+      expect(hostReveal.round?.license_url).toBeNull();
       expect(hostReveal.round?.genres).toEqual([]);
       expect(hostReveal.round?.reveal_description).toBeTruthy();
       expect(hostReveal.round_history).toHaveLength(1);

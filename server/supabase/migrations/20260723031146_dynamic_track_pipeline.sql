@@ -16,12 +16,8 @@ update private.tracks
 set
   provider = 'project',
   provider_track_id = public_id,
-  source_url = 'https://github.com/Avivmorad/Song-Guess-AI-Or-Real/blob/main/client/public/audio/' || audio_filename,
-  license_url = case
-    when license_note like '%CC0-1.0%'
-      then 'https://creativecommons.org/publicdomain/zero/1.0/'
-    else null
-  end
+  source_url = 'https://github.com/Avivmorad/Banger-or-Bot/blob/main/client/public/audio/' || audio_filename,
+  license_url = null
 where provider is null;
 
 alter table private.tracks
