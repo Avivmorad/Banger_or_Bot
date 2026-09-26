@@ -614,5 +614,79 @@ select is(
   'stalled player removal starts countdown for the ready players'
 );
 
+insert into auth.users (id, is_anonymous)
+values ('00000000-0000-0000-0000-000000000109', true);
+insert into public.rooms (
+  id,
+  code,
+  host_user_id,
+  song_pack,
+  phase
+)
+values (
+  '00000000-0000-0000-0000-00000000010a',
+  'CACHE2',
+  '00000000-0000-0000-0000-000000000109',
+  'dynamic',
+  'preparing'
+);
+insert into public.players (id, room_id, user_id, nickname, is_ready)
+values (
+  '00000000-0000-0000-0000-00000000010b',
+  '00000000-0000-0000-0000-00000000010a',
+  '00000000-0000-0000-0000-000000000109',
+  'Cache SQL Host',
+  true
+);
+insert into public.games (
+  id,
+  room_id,
+  game_number,
+  full_game_audio_preload
+)
+values (
+  '00000000-0000-0000-0000-00000000010c',
+  '00000000-0000-0000-0000-00000000010a',
+  1,
+  true
+);
+update public.rooms set
+  current_game_id = '00000000-0000-0000-0000-00000000010c',
+  current_round = 1
+where id = '00000000-0000-0000-0000-00000000010a';
+insert into public.rounds (id, game_id, room_id, round_number)
+values (
+  '00000000-0000-0000-0000-00000000010d',
+  '00000000-0000-0000-0000-00000000010c',
+  '00000000-0000-0000-0000-00000000010a',
+  1
+);
+insert into private.round_plans (round_id, planned_answer)
+values ('00000000-0000-0000-0000-00000000010d', 'real');
+insert into private.round_preparations (round_id)
+values ('00000000-0000-0000-0000-00000000010d');
+
+select is(
+  private.service_claim_round_preparation(
+    'CACHE2',
+    '00000000-0000-0000-0000-000000000109',
+    false
+  ) ->> 'status',
+  'ready',
+  'cached Jamendo audio prepares a real round without a live download'
+);
+select ok(
+  exists (
+    select 1
+    from private.round_preparations rp
+    join private.tracks t on t.id = rp.track_id
+    where rp.round_id = '00000000-0000-0000-0000-00000000010d'
+      and rp.status = 'ready'
+      and t.provider = 'jamendo'
+      and t.storage_path is not null
+  ),
+  'the cached Jamendo track is assigned to the real round'
+);
+
 select * from finish();
 rollback;
