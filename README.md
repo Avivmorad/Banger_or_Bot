@@ -99,6 +99,11 @@ local Next.js server automatically unless `E2E_BASE_URL` points to an existing
 deployment. SQL pgTAP coverage lives in
 `server/supabase/tests/schema.test.sql`.
 
+GitHub Actions currently runs format checking, linting, the client check command,
+unit tests, and the production build. The multiplayer integration suite,
+Playwright browser tests, and SQL pgTAP tests are available in the repository
+but are not part of the current GitHub Actions CI job.
+
 ## Game rules and scoring
 
 The host chooses the round count, answer duration, reveal duration, and whether
