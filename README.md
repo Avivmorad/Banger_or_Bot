@@ -16,18 +16,19 @@ every round resolves from authoritative server time and scoring.
 
 ## Engineering highlights
 
-- **Authoritative game state:** the server owns round timing, scoring and results.
-- **Synchronized play:** Realtime events, audio readiness and reconnect handling keep rooms in step.
-- **Data access:** anonymous players use scoped RPCs; track answers stay private until reveal.
-- **Verification:** unit tests, multiplayer integration tests and SQL tests are included.
+- **Authoritative game state:** PostgreSQL RPCs own phases, deadlines, scoring, and results.
+- **Realtime rooms:** up to eight players, with reconnect and state resynchronization from a server snapshot.
+- **Audio:** server-clock timing, playlist preloading, and player audio-readiness gating before countdown.
+- **Data access:** Supabase Anonymous Auth, Row Level Security, and private answer data until the reveal RPC.
+- **Delivery:** GitHub Actions CI for the client checks below, and a Vercel deployment of the Next.js app.
 
-**Stack:** Next.js, React, TypeScript, Supabase Auth/Postgres/Realtime/Storage, Vitest and Playwright.
+**Stack:** Next.js, React, TypeScript, Supabase Auth, PostgreSQL, Realtime, and private Storage.
 
 ## Features
 
 - Anonymous create/join flow for up to eight players
 - Live lobby, ready states, host settings, player removal, and host transfer
-- Per-round private audio preparation with synchronized player readiness
+- Per-round private audio preparation, playlist preloading, and player audio-readiness gating
 - Server-authoritative deadlines, scoring, reveals, and leaderboard ordering
 - Reconnect support, absent-answer handling, final results, and play again
 - Responsive keyboard-accessible UI with reduced-motion support
@@ -80,24 +81,54 @@ The local site is available at http://localhost:3000.
 
 ## Verification
 
-Run from `client/`:
+### Tests run by GitHub Actions
+
+Pushes to `main` and pull requests run `.github/workflows/ci.yml` from `client/`:
 
 ```sh
 npm run format:check
 npm run lint
 npm run check
 npm run test
-npm run test:integration
 npm run build
+```
+
+Those commands are formatting (Prettier), ESLint, TypeScript checking
+(`tsc --noEmit`), Vitest unit tests (`tests/unit`), and the production Next.js
+build. They are the only checks that workflow executes. A green CI run does not
+cover the suites below.
+
+### Suites in the repository, not run by CI
+
+These suites stay in the repo and can be run locally. GitHub Actions does not
+execute them, and this README does not claim a current pass for them.
+
+Hosted integration tests, from `client/`:
+
+```sh
+npm run test:integration
+```
+
+`test:integration` needs `E2E_SUPABASE_URL`, `E2E_SUPABASE_PUBLISHABLE_KEY`, and
+`E2E_SUPABASE_SERVICE_ROLE_KEY` from `.env.example`.
+
+Playwright browser tests, from `client/`:
+
+```sh
 npm run test:e2e
 ```
 
-`test:integration` requires the dedicated `E2E_SUPABASE_URL`,
-`E2E_SUPABASE_PUBLISHABLE_KEY`, and `E2E_SUPABASE_SERVICE_ROLE_KEY` values from
-`.env.example`. The browser suite uses the normal app variables and starts a
-local Next.js server automatically unless `E2E_BASE_URL` points to an existing
-deployment. SQL pgTAP coverage lives in
-`server/supabase/tests/schema.test.sql`.
+The browser suite uses the normal app variables and starts a local Next.js
+server unless `E2E_BASE_URL` points to an existing deployment.
+
+pgTAP / SQL database tests, from `server/` after the local Supabase stack is
+running:
+
+```sh
+npm run db:test
+```
+
+SQL coverage lives in `server/supabase/tests/schema.test.sql`.
 
 ## Game rules and scoring
 
@@ -131,23 +162,27 @@ npm run db:lint
 npm run db:test
 ```
 
-Production migrations should be reviewed, applied in order, followed by the
-Supabase security and performance advisors. Expired rooms can be removed with
-the private `cleanup_expired_rooms` function from a trusted scheduled backend
-job. Do not expose that operation or any service-role credential to the client.
+Apply migrations in order on the target database, then run the Supabase
+security and performance advisors there. The SQL in this repository is the
+source of those changes. It does not record that a remote project has every
+migration applied, or that advisors have been run against production. Expired
+rooms can be removed with the private `cleanup_expired_rooms` function from a
+trusted scheduled backend job. Do not expose that operation or any service-role
+credential to the client.
 
 ## Deployment
 
-The public app is available at `https://banger-or-bot.vercel.app`. The Vercel
-configuration uses `client/` as its root directory and deploys `main` to production. Pull requests receive
-isolated preview deployments through the GitHub integration. Configure the
-public variables plus the server-only `SUPABASE_SERVICE_ROLE_KEY` and
-`JAMENDO_CLIENT_ID` in Vercel for Production, Preview, and Development. Never
-prefix either secret with `NEXT_PUBLIC_`.
+The public app is available at `https://banger-or-bot.vercel.app`. Vercel
+builds the Next.js app in `client/`, and production tracks `main`. Configure
+the public variables plus the server-only `SUPABASE_SERVICE_ROLE_KEY` and
+`JAMENDO_CLIENT_ID` in Vercel for each environment you use. Never prefix either
+secret with `NEXT_PUBLIC_`.
 
-The deployed game uses its dedicated legacy-named Supabase project. It does not
-share resources or credentials with other
-applications.
+Use a Supabase project dedicated to this game: Anonymous Auth, the migrations
+under `server/supabase/migrations/`, and private Storage. Which remote settings
+are enabled, which migrations are applied, and any separate review of
+production track licenses are checks in that project. This repository does not
+certify them.
 
 ## Known limitations
 
