@@ -99,3 +99,12 @@ Use this for API keys, secrets, permissions, authentication, external dashboards
 - Include only for unresolved problems or pre-existing failures.
 
 Keep the final response concise and avoid file-by-file narration unless requested.
+
+## Cursor Cloud specific instructions
+
+- Node.js 22 is already on the image. From the repository root, install with `npm ci --prefix client`. The command is safe to run again.
+- Start the app from `client/` with `npm run dev`. Open `http://localhost:3000`. Do not use `http://127.0.0.1:3000`: Next.js treats that host as a different dev origin and blocks the dev resources, so the page does not hydrate.
+- `GET /api/health` returns `status: ok`. `multiplayer` is `configured` only when `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` are present. Put them in gitignored `client/.env.local`.
+- Those two values are enough to create and join a room. Preparing round audio also needs `SUPABASE_SERVICE_ROLE_KEY`. `JAMENDO_CLIENT_ID` is only for the dynamic human-track pack; local demo fixtures do not need it.
+- Client checks, from `client/`: `npm run format:check`, `npm run lint`, `npm run check`, `npm run test`, and `npm run build`.
+- The optional local Supabase stack under `server/` needs Docker and about 7 GB of free RAM. This Cloud Agent setup does not start it.
